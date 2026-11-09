@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a problem with MyEditor
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Please search existing reports first. Do not attach private footage, project files, or personal information.
+  - type: input
+    id: version
+    attributes:
+      label: MyEditor version
+      placeholder: e.g. 3.3.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: e.g. Windows 11 24H2
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the exact error text if one appeared.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: 1. Open… 2. Choose… 3. Observe…
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Logs or screenshots
+      description: Redact usernames and private paths. Use synthetic or freely licensed media only.
+    validations:
+      required: false

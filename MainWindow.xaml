@@ -1,0 +1,1030 @@
+<Window x:Class="VideoEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MyEditor 3.3  |  Video Studio" Icon="pack://application:,,,/Assets/logo.png" Height="900" Width="1480" MinHeight="520" MinWidth="640" ResizeMode="CanResize" WindowStartupLocation="CenterScreen"
+        Background="#15151F" Foreground="#E8EAF0" KeyDown="Window_KeyDown" SizeChanged="MainWindow_SizeChanged">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="3,2"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Background" Value="#24262D"/>
+            <Setter Property="Foreground" Value="#E8EAF0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonChrome" Background="{TemplateBinding Background}" CornerRadius="7" SnapsToDevicePixels="True">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonChrome" Property="Background" Value="#343943"/><Setter Property="Foreground" Value="#C9FAFC"/></Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter TargetName="ButtonChrome" Property="Background" Value="#185563"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="ButtonChrome" Property="Background" Value="#303744"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ButtonChrome" Property="Opacity" Value="0.42"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TealActionButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#126E7A"/><Setter Property="BorderBrush" Value="#1A9BAB"/><Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="VioletActionButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#493778"/><Setter Property="BorderBrush" Value="#7157B5"/><Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="BlueActionButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#294E82"/><Setter Property="BorderBrush" Value="#3D76B8"/><Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="AmberActionButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#6A4B20"/><Setter Property="BorderBrush" Value="#AE7C34"/><Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="RecordActionButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#792E40"/><Setter Property="BorderBrush" Value="#CA5069"/><Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="#1C1C28"/><Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#12121B" BorderBrush="#262638" BorderThickness="0,0,1,0" Padding="3,8">
+                                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                                    <StackPanel IsItemsHost="True" Orientation="Vertical"/>
+                                </ScrollViewer>
+                            </Border>
+                            <Border Grid.Column="1" Background="{TemplateBinding Background}">
+                                <ContentPresenter ContentSource="SelectedContent"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="#A9A9BC"/><Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="0,8"/><Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid>
+                            <Border x:Name="TabChrome" Background="{TemplateBinding Background}" CornerRadius="9" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Border x:Name="ActiveBar" Width="3" Height="26" CornerRadius="2" Background="#7B83EB" HorizontalAlignment="Left" Margin="-3,0,0,0" Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True"><Setter TargetName="TabChrome" Property="Background" Value="#2A2B47"/><Setter TargetName="ActiveBar" Property="Visibility" Value="Visible"/><Setter Property="Foreground" Value="#FFFFFF"/></Trigger>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="TabChrome" Property="Background" Value="#23233A"/><Setter Property="Foreground" Value="#E6E8FF"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="TabChrome" Property="Opacity" Value="0.5"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ExportPurpleButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#6B5CE7"/><Setter Property="Foreground" Value="White"/><Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}" CornerRadius="8" SnapsToDevicePixels="True">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="#8173F0"/></Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter TargetName="Chrome" Property="Background" Value="#5547C9"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Chrome" Property="Opacity" Value="0.42"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RoundPlayButton" TargetType="Button">
+            <Setter Property="Focusable" Value="False"/><Setter Property="Foreground" Value="#15151F"/><Setter Property="FontSize" Value="17"/>
+            <Setter Property="Width" Value="46"/><Setter Property="Height" Value="46"/><Setter Property="Margin" Value="8,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse x:Name="Disc" Fill="#F2F3FF"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Disc" Property="Fill" Value="#FFFFFF"/></Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter TargetName="Disc" Property="Fill" Value="#B9BDFB"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="IconButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#C9CBE0"/>
+            <Setter Property="FontSize" Value="14"/><Setter Property="Padding" Value="9,5"/>
+        </Style>
+        <Style x:Key="PillButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#262740"/><Setter Property="Foreground" Value="#E3E4FF"/>
+            <Setter Property="Padding" Value="12,6"/><Setter Property="Margin" Value="3,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chrome" Background="{TemplateBinding Background}" CornerRadius="16" SnapsToDevicePixels="True">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Chrome" Property="Background" Value="#34365A"/></Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter TargetName="Chrome" Property="Background" Value="#4A4D86"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Chrome" Property="Opacity" Value="0.42"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SeekSlider" TargetType="Slider">
+            <Setter Property="Height" Value="16"/><Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid Background="Transparent" VerticalAlignment="Center">
+                            <Border Height="4" CornerRadius="2" Background="#33344D" VerticalAlignment="Center"/>
+                            <Track x:Name="PART_Track" VerticalAlignment="Center">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Height="4" CornerRadius="2" Background="#7B83EB" VerticalAlignment="Center"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="Slider.IncreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Height="16" Background="Transparent"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Width="13" Height="13" Focusable="False">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb"><Ellipse Fill="#FFFFFF" Stroke="#7B83EB" StrokeThickness="2"/></ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#E8EAF0"/>
+            <Setter Property="Background" Value="#222833"/>
+            <Setter Property="BorderBrush" Value="#3A4554"/>
+            <Setter Property="Margin" Value="3,2,3,5"/>
+            <Setter Property="Padding" Value="7,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Field" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="3"/>
+                            <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                              Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" IsHitTestVisible="False"/>
+                            <ToggleButton x:Name="DropButton" Width="24" HorizontalAlignment="Right" Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Background="Transparent" Foreground="{TemplateBinding Foreground}" BorderThickness="0" Content="⌄"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                            <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="300"
+                                        Background="#202733" BorderBrush="#3A4554" BorderThickness="1" CornerRadius="6">
+                                    <ScrollViewer CanContentScroll="True"><ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/></ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Field" Property="BorderBrush" Value="#38C8D9"/><Setter TargetName="Field" Property="Background" Value="#293340"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Field" Property="Opacity" Value="0.55"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Foreground" Value="#E8EAF0"/>
+            <Setter Property="Background" Value="#17191E"/>
+            <Setter Property="BorderBrush" Value="#383B43"/>
+            <Setter Property="Margin" Value="0,2,0,8"/>
+        </Style>
+        <Style TargetType="Slider">
+            <Setter Property="Margin" Value="0,2,0,8"/>
+            <Setter Property="AutoToolTipPlacement" Value="TopLeft"/>
+            <Setter Property="AutoToolTipPrecision" Value="2"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,2,0,8"/>
+            <Setter Property="Foreground" Value="#E8EAF0"/>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#E8EAF0"/>
+            <Setter Property="Background" Value="#25272D"/>
+            <Style.Triggers><Trigger Property="IsHighlighted" Value="True"><Setter Property="Background" Value="#214451"/><Setter Property="Foreground" Value="#8CEAF1"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter Property="Foreground" Value="#5E6570"/></Trigger></Style.Triggers>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="#E8EAF0"/>
+            <Setter Property="Background" Value="#202329"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True"><Setter Property="Background" Value="#293841"/><Setter Property="Foreground" Value="#62D5E1"/></Trigger>
+                <Trigger Property="IsEnabled" Value="False"><Setter Property="Foreground" Value="#969DA8"/></Trigger>
+            </Style.Triggers>
+        </Style>
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="#202329"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="#E8EAF0"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#293841"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#62D5E1"/>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Foreground" Value="#E8EAF0"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="#263946"/></Trigger>
+                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#292C33"/></Trigger>
+            </Style.Triggers>
+        </Style>
+        <SolidColorBrush x:Key="PanelBrush" Color="#1C1C28"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#7B83EB"/>
+    </Window.Resources>
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition x:Name="UpperWorkspaceRow" Height="3*" MinHeight="190"/>
+            <RowDefinition Height="6"/>
+            <RowDefinition x:Name="TimelineWorkspaceRow" Height="2*" MinHeight="170"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Background="#12121B" Margin="0,0,0,3" LastChildFill="False" MinHeight="46">
+            <StackPanel Orientation="Horizontal" Margin="12,6,16,6" VerticalAlignment="Center">
+                <Image Source="pack://application:,,,/Assets/logo.png" Width="32" Height="32" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center"/>
+                <TextBlock Text="MyEditor" FontWeight="Bold" FontSize="15" Margin="9,0,0,0" Foreground="#F1F2FF" VerticalAlignment="Center"/>
+                <Button x:Name="MoreMenuButton" Content="☰ Menu" Click="MoreMenu_Click" Style="{StaticResource PillButton}" Margin="14,0,0,0" Padding="10,6" ToolTip="Project, editing, assets, settings and help">
+                    <Button.ContextMenu>
+                        <ContextMenu Background="#1C1C28" Foreground="#E8EAF0" BorderBrush="#393B55">
+                            <MenuItem Header="File" Background="#1C1C28" Foreground="#E8EAF0">
+                                <MenuItem Header="New project" InputGestureText="Ctrl+N" Click="NewProject_Click"/>
+                                <MenuItem Header="Open project…" InputGestureText="Ctrl+O" Click="OpenProject_Click"/>
+                                <MenuItem Header="Save project" InputGestureText="Ctrl+S" Click="SaveProject_Click"/>
+                                <MenuItem Header="Save project as…" InputGestureText="Ctrl+Shift+S" Click="SaveProjectAs_Click"/>
+                                <Separator/>
+                                <MenuItem Header="Import media…" Click="Import_Click"/>
+                                <MenuItem Header="Export video…" Click="Export_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="Edit" Background="#1C1C28" Foreground="#E8EAF0">
+                                <MenuItem Header="Split at playhead" InputGestureText="S" Click="Split_Click"/>
+                                <MenuItem Header="Delete selected" InputGestureText="Delete" Click="Delete_Click"/>
+                                <MenuItem Header="Move clip left" Click="MoveLeft_Click"/>
+                                <MenuItem Header="Move clip right" Click="MoveRight_Click"/>
+                                <Separator/>
+                                <MenuItem Header="Undo" InputGestureText="Ctrl+Z" Click="Undo_Click"/>
+                                <MenuItem Header="Redo" InputGestureText="Ctrl+Y" Click="Redo_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="Assets" Background="#1C1C28" Foreground="#E8EAF0">
+                                <MenuItem Header="Import media…" Click="Import_Click"/>
+                                <MenuItem Header="Import subtitles (.srt)…" Click="ImportSubtitles_Click"/>
+                                <MenuItem Header="Export subtitles (.srt)…" Click="ExportSubtitles_Click"/>
+                                <MenuItem Header="Add to timeline" Click="AddSelected_Click"/>
+                                <MenuItem Header="Add as overlay" Click="AsOverlay_Click"/>
+                                <Separator/>
+                                <MenuItem Header="Build preview proxies" Click="BuildProxies_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="View" Background="#1C1C28" Foreground="#E8EAF0">
+                                <MenuItem Header="Zoom to fit" Click="ZoomFit_Click"/>
+                                <MenuItem Header="Workspace">
+                                    <MenuItem Header="Editing" Click="WorkspacePreset_Click" Tag="Editing"/>
+                                    <MenuItem Header="Effects" Click="WorkspacePreset_Click" Tag="Effects"/>
+                                    <MenuItem Header="Assembly" Click="WorkspacePreset_Click" Tag="Assembly"/>
+                                    <MenuItem Header="Audio" Click="WorkspacePreset_Click" Tag="Audio"/>
+                                    <MenuItem Header="Graphics" Click="WorkspacePreset_Click" Tag="Graphics"/>
+                                    <MenuItem Header="Classic" Click="WorkspacePreset_Click" Tag="Classic"/>
+                                    <Separator/>
+                                    <MenuItem Header="Reset to Saved Layout" Click="ResetWorkspace_Click"/>
+                                </MenuItem>
+                                <MenuItem Header="Panels">
+                                    <MenuItem Header="Float Media panel" Click="PanelFloat_Click" Tag="Media"/>
+                                    <MenuItem Header="Float Program monitor" Click="PanelFloat_Click" Tag="Program"/>
+                                    <MenuItem Header="Float Inspector panel" Click="PanelFloat_Click" Tag="Inspector"/>
+                                    <Separator/>
+                                    <MenuItem Header="Dock all panels" Click="DockAllPanels_Click"/>
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="AI Tools" Background="#1C1C28" Foreground="#E8EAF0"><MenuItem Header="Local AI captions" Click="LocalCaptions_Click"/></MenuItem>
+                            <MenuItem Header="Add" Background="#1C1C28" Foreground="#E8EAF0">
+                                <MenuItem Header="Add text" Click="AddText_Click"/>
+                                <MenuItem Header="Text to speech" Click="Tts_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="Settings" Background="#1C1C28" Foreground="#E8EAF0">
+                                <MenuItem Header="Quick setup" IsEnabled="False" Foreground="#62D5E1"/>
+                                <MenuItem Header="Recommended for this PC" InputGestureText="Auto" Click="QuickSetupAuto_Click" ToolTip="Automatically choose smooth settings based on this PC"/>
+                                <MenuItem Header="Low-end PC · smoother editing" Click="QuickSetupLite_Click" ToolTip="Use smaller previews and lighter recording/export settings"/>
+                                <MenuItem Header="Higher video quality" Click="QuickSetupQuality_Click" ToolTip="Use 1080p settings and a supported GPU encoder when available"/>
+                                <Separator/>
+                                <MenuItem Header="Recording mode">
+                                    <MenuItem x:Name="RecordingLiteMenuItem" Header="Lite · Native size · 30fps" IsCheckable="True" IsChecked="True" Tag="0" Click="RecordingModeMenu_Click"/>
+                                    <MenuItem x:Name="RecordingExtraLiteMenuItem" Header="Extra Lite · 540p · 12fps" IsCheckable="True" Tag="1" Click="RecordingModeMenu_Click"/>
+                                    <MenuItem x:Name="Recording60MenuItem" Header="Native size · 60fps · Heavy" IsCheckable="True" Tag="2" Click="RecordingModeMenu_Click"/>
+                                </MenuItem>
+                                <MenuItem Header="Recorder Studio…" Click="OpenRecorderStudio_Click" ToolTip="GPU encoding, quality, system audio, webcam bubble, countdown and auto-stop"/>
+                                <Separator/>
+                                <MenuItem x:Name="TrackMouseMenuItem" Header="Track mouse movement and clicks" IsCheckable="True" IsChecked="True" Click="TrackMouseMenu_Click" ToolTip="Record cursor positions and all mouse buttons for click highlights and automatic focus zoom"/>
+                                <MenuItem x:Name="TrackTypingMenuItem" Header="Auto zoom while typing" IsCheckable="True" IsChecked="True" Click="TrackTypingMenu_Click" ToolTip="Add a gentle focus zoom when you type during a screen recording"/>
+                                <MenuItem x:Name="LowMemoryMenuItem" Header="Low-memory preview" IsCheckable="True" Click="LowMemoryMenu_Click"/>
+                            </MenuItem>
+                            <MenuItem Header="Help" Background="#1C1C28" Foreground="#E8EAF0"><MenuItem Header="Keyboard shortcuts" Click="ShowShortcuts_Click"/><Separator/><MenuItem Header="About MyEditor" Click="ShowAbout_Click"/></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </StackPanel>
+            <ScrollViewer x:Name="TopActionsScroll" DockPanel.Dock="Right" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" VerticalAlignment="Center" Margin="8,0,10,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="EffectsTopButton" Content="✨ Effects" Click="OpenEffectsBrowser_Click" Style="{StaticResource PillButton}" ToolTip="Browse categorized effects and transitions with visual previews"/>
+                    <Button x:Name="StickersTopButton" Content="✦ Stickers" Click="OpenStickers_Click" Style="{StaticResource PillButton}" ToolTip="Browse built-in stickers, emoji and motion combinations"/>
+                    <Button x:Name="ShapesTopButton" Content="◆ Shapes" Click="OpenDesignStudio_Click" Style="{StaticResource PillButton}" ToolTip="Browse shapes and animated backgrounds"/>
+                    <Button x:Name="VideoLabTopButton" Content="🎨 Video Lab" Click="OpenVideoLab_Click" Style="{StaticResource PillButton}" ToolTip="Custom backgrounds, color presets and advanced video settings"/>
+                    <Button Content="▣ Source" Click="OpenSourceMonitor_Click" Style="{StaticResource PillButton}" ToolTip="Preview imported media, mark In/Out, and insert or overwrite the timeline"/>
+                    <Button x:Name="RecordBtn" Content="●  Record" Click="RecordScreen_Click" Style="{StaticResource PillButton}" Background="#7A2E45" Foreground="White" ToolTip="Start or stop a screen recording"/>
+                    <Button x:Name="ExportBtn" Content="Export  ⤴" Click="Export_Click" Style="{StaticResource ExportPurpleButton}" Padding="20,8" Margin="8,0,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+
+        <!-- Compact project / export settings strip -->
+        <Grid Grid.Row="1" Margin="8,3,8,7" Background="#1C1C28">
+            <WrapPanel VerticalAlignment="Center">
+                <TextBlock Text="●  Record source" Foreground="#E87A95" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                <ComboBox x:Name="RecordingAudioBox" Width="185" SelectedIndex="0" VerticalAlignment="Center" Margin="0,0,6,3"
+                          ToolTip="Choose desktop audio (WASAPI loopback), a microphone, or Off for video only.">
+                    <ComboBoxItem Content="Record audio: Off" Tag=""/>
+                </ComboBox>
+                <TextBlock Text="After recording" Foreground="#A8AFBA" FontSize="11" VerticalAlignment="Center" Margin="2,0,4,3"/>
+                <ComboBox x:Name="RecordingInsertBox" Width="154" SelectedIndex="1" VerticalAlignment="Center" Margin="0,0,7,3"
+                          ToolTip="Choose where the completed recording goes: playhead, end of the video track, or media library only.">
+                    <ComboBoxItem Content="Insert at playhead"/>
+                    <ComboBoxItem Content="Add to timeline end"/>
+                    <ComboBoxItem Content="Media library only"/>
+                </ComboBox>
+                <Button x:Name="CaptureAreaButton" Content="Select area…" Click="SelectCaptureArea_Click" Margin="0,0,3,0"
+                        ToolTip="Choose a recording area on the primary display"/>
+                <Button x:Name="CaptureWindowButton" Content="Window…" Click="SelectCaptureWindow_Click" Margin="0,0,3,0"
+                        ToolTip="Choose an open window to record"/>
+                <Button x:Name="ClearCaptureSourceButton" Content="×" Click="ClearCaptureArea_Click" Visibility="Collapsed" Padding="6,4"
+                        ToolTip="Use the full primary display again"/>
+                <Border Width="1" Height="20" Background="#33344D" Margin="8,0,8,0"/>
+                <ComboBox x:Name="PerformanceModeBox" Width="154" SelectedIndex="0" SelectionChanged="PerformanceMode_Changed" VerticalAlignment="Center" Margin="3,2,3,5"
+                          ToolTip="Auto selects Lite on PCs with less than 10 GB RAM to reduce editor and export pressure. High enables better export settings and a detected GPU encoder when available.">
+                    <ComboBoxItem Content="Auto · recommended"/>
+                    <ComboBoxItem Content="Lite · low RAM"/>
+                    <ComboBoxItem Content="High · 10 GB+ class"/>
+                </ComboBox>
+                <TextBlock x:Name="PerformanceInfo" Text="Checking PC…" VerticalAlignment="Center" Margin="4,0,8,0" Foreground="#A8AFBA" ToolTip="This is a guidance profile. Actual performance depends on source video, Windows memory use and available GPU hardware."/>
+                <TextBlock x:Name="Status" Text="Ready" VerticalAlignment="Center" Margin="8,0" Foreground="#A8AFBA"/>
+                <ProgressBar x:Name="ExportBar" Width="110" Height="14" Visibility="Collapsed" Margin="4,0"/>
+                <Button x:Name="SetupBtn" Content="Retry setup" Click="SetupTools_Click" Visibility="Collapsed" Background="#FFF3D9" Foreground="#805600" BorderBrush="#E9D29A"/>
+                <TextBlock Text="Background" VerticalAlignment="Center" Margin="8,0,4,4" Foreground="#AEB5C4"/>
+                <ComboBox x:Name="QuickBackgroundBox" Width="136" SelectionChanged="QuickBackground_Changed" VerticalAlignment="Center" Margin="0,0,7,4" ToolTip="Set a background before or after adding a clip; resize the selected clip in its Inspector">
+                    <ComboBoxItem Content="Soft blur fill" Tag="Soft blur fill"/>
+                    <ComboBoxItem Content="Black frame" Tag="Black bars"/>
+                    <ComboBoxItem Content="Dark studio" Tag="#151820"/>
+                    <ComboBoxItem Content="Violet" Tag="#33234A"/>
+                    <ComboBoxItem Content="Deep teal" Tag="#12363A"/>
+                    <ComboBoxItem Content="Custom color…" Tag="Solid color"/>
+                    <ComboBoxItem Content="Custom image…" Tag="Custom image"/>
+                </ComboBox>
+                <ComboBox x:Name="AspectBox" Width="120" SelectedIndex="0" SelectionChanged="ProjectSetting_Changed" VerticalAlignment="Center" Margin="3,0" ToolTip="Choose social-video framing; portrait and square use a centered crop">
+                    <ComboBoxItem Content="Landscape 16:9"/>
+                    <ComboBoxItem Content="Portrait 9:16"/>
+                    <ComboBoxItem Content="Square 1:1"/>
+                </ComboBox>
+                <ComboBox x:Name="QualityBox" Width="165" SelectedIndex="0" SelectionChanged="ProjectSetting_Changed" VerticalAlignment="Center" Margin="3,0" ToolTip="Choose export resolution and frame rate">
+                    <ComboBoxItem Content="540p 24fps · Low-end PC"/>
+                    <ComboBoxItem Content="720p 30fps · Fast"/>
+                    <ComboBoxItem Content="1080p 30fps"/>
+                    <ComboBoxItem Content="1080p 60fps"/>
+                    <ComboBoxItem Content="4K 30fps"/>
+                    <ComboBoxItem Content="4K 60fps"/>
+                </ComboBox>
+                <ComboBox x:Name="VideoQualityBox" Width="124" SelectedIndex="1" SelectionChanged="ProjectSetting_Changed" VerticalAlignment="Center" Margin="3,0" ToolTip="Choose the balance between image detail and file size">
+                    <ComboBoxItem Content="Smaller file"/><ComboBoxItem Content="Standard quality"/><ComboBoxItem Content="High quality"/>
+                </ComboBox>
+                <ComboBox x:Name="AudioQualityBox" Width="110" SelectedIndex="1" SelectionChanged="ProjectSetting_Changed" VerticalAlignment="Center" Margin="3,0" ToolTip="Choose exported audio bitrate">
+                    <ComboBoxItem Content="Audio 128k" Tag="128"/><ComboBoxItem Content="Audio 192k" Tag="192"/><ComboBoxItem Content="Audio 320k" Tag="320"/>
+                </ComboBox>
+                <ComboBox x:Name="EncoderBox" Width="150" SelectedIndex="0" VerticalAlignment="Center" Margin="3,0" ToolTip="Video encoder. GPU options are enabled only if this PC's FFmpeg includes them; if a GPU encoder fails you can retry on the CPU.">
+                    <ComboBoxItem Content="H.264 · Compatible" Tag="h264"/>
+                    <ComboBoxItem Content="H.265 · Smaller file" Tag="h265"/>
+                    <ComboBoxItem Content="H.264 · NVIDIA GPU" Tag="h264_nvenc"/>
+                    <ComboBoxItem Content="H.264 · Intel GPU" Tag="h264_qsv"/>
+                    <ComboBoxItem Content="H.264 · AMD GPU" Tag="h264_amf"/>
+                    <ComboBoxItem Content="H.264 · Windows native" Tag="h264_mf"/>
+                </ComboBox>
+            </WrapPanel>
+        </Grid>
+
+        <!-- State-backed controls are exposed through the Settings menu. -->
+        <StackPanel Visibility="Collapsed" IsHitTestVisible="False">
+            <ComboBox x:Name="RecordingModeBox" SelectedIndex="0"/>
+            <CheckBox x:Name="RecordMouseCheck" IsChecked="True"/>
+            <CheckBox x:Name="RecordTypingCheck" IsChecked="True"/>
+            <CheckBox x:Name="ProxyModeCheck" Checked="ProxyMode_Changed" Unchecked="ProxyMode_Changed"/>
+        </StackPanel>
+
+        <!-- Media bin + preview + inspector -->
+        <Grid x:Name="WorkspaceGrid" Grid.Row="2" Margin="8,0,8,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="MediaPaneColumn" Width="460" MinWidth="180"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="*" MinWidth="220"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition x:Name="InspectorPaneColumn" Width="300" MinWidth="160"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="MediaPanelHost" Grid.Column="0" Margin="0,0,3,0" Background="{StaticResource PanelBrush}" AllowDrop="True" DragOver="WorkspacePanel_DragOver" Drop="WorkspacePanel_Drop">
+                <TabControl x:Name="WorkspaceTabs" TabStripPlacement="Left" Background="#1C1C28" BorderThickness="0" Padding="0">
+                  <TabItem><TabItem.Header><StackPanel Width="62"><TextBlock Text="🗂" FontFamily="Segoe UI Emoji" FontSize="20" HorizontalAlignment="Center"/><TextBlock Text="Your media" FontSize="10.5" Margin="0,3,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/></StackPanel></TabItem.Header>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Margin="10,9,10,7">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="＋ Import" Click="Import_Click" Style="{StaticResource TealActionButton}" Foreground="White"/>
+                        <StackPanel>
+                            <TextBlock Text="Media Library  ⠿" FontWeight="SemiBold" FontSize="14" Foreground="#E8EAF0" Tag="Media" PreviewMouseMove="WorkspacePanel_DragStart" ToolTip="Drag this grip onto another panel: edges reorder panels, center groups them in tabs"/>
+                            <TextBlock Text="Drag to a track or double-click to add" Margin="0,3,0,8" FontSize="11" Foreground="#9299A5"/>
+                        </StackPanel>
+                    </DockPanel>
+                    <TextBox x:Name="MediaSearch" Margin="0,4,0,0" Padding="8,6" ToolTip="Search imported files" TextChanged="MediaSearch_TextChanged" />
+                </StackPanel>
+                <ListBox x:Name="BinList" Background="#1A1C21" Foreground="#E8EAF0" BorderThickness="0" Padding="3"
+                         MouseDoubleClick="BinList_MouseDoubleClick" PreviewMouseRightButtonDown="BinList_RightClick"
+                         PreviewMouseLeftButtonDown="BinList_DragStart" MouseMove="BinList_DragMove"
+                         SelectionChanged="BinList_SelectionChanged">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="146" Height="132" Margin="3" Background="#24262C">
+                                <Grid.RowDefinitions><RowDefinition Height="92"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <Grid Background="#17191E">
+                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill"/>
+                                    <TextBlock Text="{Binding ThumbnailGlyph}" FontSize="24" Foreground="#78818E" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers><DataTrigger Binding="{Binding Thumbnail}" Value="{x:Null}"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <Border HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Padding="4,1" Background="#AA101115" CornerRadius="3">
+                                        <TextBlock Text="{Binding Kind}" FontSize="9" Foreground="#D6DAE2"/>
+                                    </Border>
+                                </Grid>
+                                <StackPanel Grid.Row="1" Margin="7,4">
+                                    <TextBlock Text="{Binding Name}" FontSize="10" Foreground="#E4E6EB" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding Duration, StringFormat={}{0:0.0}s}" FontSize="9" Foreground="#9299A5" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add to timeline" Click="AddSelected_Click"/>
+                            <MenuItem Header="Add as overlay" Click="AsOverlay_Click"/>
+                            <Separator/>
+                            <MenuItem Header="Remove from media library" Click="RemoveMedia_Click"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+            </DockPanel>
+                  </TabItem>
+                  <TabItem><TabItem.Header><StackPanel Width="62"><TextBlock Text="🔤" FontFamily="Segoe UI Emoji" FontSize="20" HorizontalAlignment="Center"/><TextBlock Text="Text" FontSize="10.5" Margin="0,3,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/></StackPanel></TabItem.Header>
+                    <StackPanel Margin="14" VerticalAlignment="Top">
+                      <TextBlock Text="Text &amp; titles" FontSize="16" FontWeight="SemiBold" Foreground="#F0EDF9"/>
+                      <TextBlock Text="Add a title, then choose a ready-made style in the Inspector." Margin="0,5,0,12" Foreground="#A8A5B3" TextWrapping="Wrap"/>
+                      <TextBlock Text="Title text"/><TextBox x:Name="ShelfTitleText" Text="Your title" Padding="8,6"/>
+                      <TextBlock Text="Design template" Margin="0,4,0,2"/><ComboBox x:Name="TextTemplateShelfBox"/>
+                      <Button Content="＋ Add styled title" Click="AddStyledTitle_Click" Style="{StaticResource VioletActionButton}" Margin="0,6,0,4"/>
+                      <WrapPanel Margin="0,2,0,2">
+                        <Button Content="Import SRT" Click="ImportSubtitles_Click" Style="{StaticResource BlueActionButton}" ToolTip="Import timed captions from an SRT file"/>
+                        <Button Content="Export SRT" Click="ExportSubtitles_Click" Style="{StaticResource TealActionButton}" ToolTip="Save timeline text clips as an SRT subtitle file"/>
+                      </WrapPanel>
+                      <Button Content="♫ Text to speech" Click="Tts_Click" Style="{StaticResource BlueActionButton}" Margin="0,2,0,4"/>
+                    </StackPanel>
+                  </TabItem>
+                  <TabItem><TabItem.Header><StackPanel Width="62"><TextBlock Text="◐" FontFamily="Segoe UI Emoji" FontSize="20" HorizontalAlignment="Center"/><TextBlock Text="Transitions" FontSize="10.5" Margin="0,3,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/></StackPanel></TabItem.Header>
+                    <StackPanel Margin="14" VerticalAlignment="Top">
+                      <TextBlock Text="Clip transitions" FontSize="16" FontWeight="SemiBold" Foreground="#F0EDF9"/>
+                      <TextBlock Text="Select a video clip first. The transition applies when this clip follows the previous clip." Margin="0,5,0,12" Foreground="#A8A5B3" TextWrapping="Wrap"/>
+                      <TextBlock Text="Transition style"/><ComboBox x:Name="TransitionShelfBox"/>
+                      <Button Content="Apply to selected clip" Click="ApplyTransitionShelf_Click" Style="{StaticResource VioletActionButton}" Margin="0,8,0,4"/>
+                    </StackPanel>
+                  </TabItem>
+                  <TabItem><TabItem.Header><StackPanel Width="62"><TextBlock Text="✨" FontFamily="Segoe UI Emoji" FontSize="20" HorizontalAlignment="Center"/><TextBlock Text="Effects" FontSize="10.5" Margin="0,3,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/></StackPanel></TabItem.Header>
+                    <StackPanel Margin="14" VerticalAlignment="Top">
+                      <TextBlock Text="Color looks" FontSize="16" FontWeight="SemiBold" Foreground="#F0EDF9"/>
+                      <TextBlock Text="100 lightweight looks. Choose one and apply it to the selected video clip." Margin="0,5,0,12" Foreground="#A8A5B3" TextWrapping="Wrap"/>
+                      <TextBlock Text="Effect library"/><ComboBox x:Name="EffectShelfBox" MaxDropDownHeight="360"/>
+                      <Button Content="Apply effect" Click="ApplyEffectShelf_Click" Style="{StaticResource VioletActionButton}" Margin="0,8,0,4"/>
+                    </StackPanel>
+                  </TabItem>
+                  <TabItem><TabItem.Header><StackPanel Width="62"><TextBlock Text="🎨" FontFamily="Segoe UI Emoji" FontSize="20" HorizontalAlignment="Center"/><TextBlock Text="Filters" FontSize="10.5" Margin="0,3,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/></StackPanel></TabItem.Header>
+                    <StackPanel Margin="14" VerticalAlignment="Top">
+                      <TextBlock Text="Quick filters" FontSize="16" FontWeight="SemiBold" Foreground="#F0EDF9"/>
+                      <TextBlock Text="Fast, familiar color corrections for the selected video clip." Margin="0,5,0,12" Foreground="#A8A5B3" TextWrapping="Wrap"/>
+                      <TextBlock Text="Filter"/><ComboBox x:Name="FilterShelfBox"/>
+                      <Button Content="Apply filter" Click="ApplyFilterShelf_Click" Style="{StaticResource TealActionButton}" Margin="0,8,0,4"/>
+                    </StackPanel>
+                  </TabItem>
+                  <TabItem><TabItem.Header><StackPanel Width="62"><TextBlock Text="📐" FontFamily="Segoe UI Emoji" FontSize="20" HorizontalAlignment="Center"/><TextBlock Text="Templates" FontSize="10.5" Margin="0,3,0,0" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/></StackPanel></TabItem.Header>
+                    <DockPanel>
+                      <StackPanel DockPanel.Dock="Top" Margin="12,12,12,6">
+                        <TextBlock Text="Full video templates" FontSize="16" FontWeight="SemiBold" Foreground="#39D5D0"/>
+                        <TextBlock Text="Choose a ready-made 15-second video. MyEditor builds editable scenes, animated titles and shapes on your timeline." Margin="0,5,0,8" Foreground="#A8A5B3" TextWrapping="Wrap" FontSize="11.5"/>
+                        <ComboBox x:Name="VideoTemplateBox" ToolTip="Choose a complete video template"/>
+                        <Button Content="✦  Create full video" Click="CreateVideoTemplate_Click" Style="{StaticResource TealActionButton}" Margin="0,7,0,10"/>
+                        <Separator Background="#30333E" Margin="0,0,0,8"/>
+                        <TextBlock Text="Title templates" FontSize="16" FontWeight="SemiBold" Foreground="#F0EDF9"/>
+                        <TextBlock Text="Pick a card. Double-click to add it to the timeline, or select a title clip and press Apply." Margin="0,5,0,10" Foreground="#A8A5B3" TextWrapping="Wrap" FontSize="11.5"/>
+                        <TextBox x:Name="TemplateTitleText" Text="Your title" Padding="8,6" ToolTip="Type your title; the cards below preview it"/>
+                        <ComboBox x:Name="TemplateCategoryBox" Margin="0,8,0,0" ToolTip="Filter templates by category"/>
+                        <ComboBox x:Name="TemplateShelfBox" Visibility="Collapsed"/>
+                      </StackPanel>
+                      <UniformGrid DockPanel.Dock="Bottom" Columns="2" Margin="9,4,9,10">
+                        <Button Content="＋ Add title" Click="AddStyledTitle_Click" Style="{StaticResource VioletActionButton}"/>
+                        <Button Content="Apply to selected" Click="ApplyTemplateShelf_Click" Style="{StaticResource BlueActionButton}"/>
+                      </UniformGrid>
+                      <ListBox x:Name="TemplateCardList" Background="Transparent" BorderThickness="0" Padding="4" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ListBox.ItemsPanel>
+                      </ListBox>
+                    </DockPanel>
+                  </TabItem>
+                  <TabItem><TabItem.Header><StackPanel Width="62"><TextBlock Text="✦" FontSize="21" HorizontalAlignment="Center"/><TextBlock Text="Motion" FontSize="10.5" Margin="0,3,0,0" HorizontalAlignment="Center"/></StackPanel></TabItem.Header>
+                    <DockPanel Margin="10">
+                      <StackPanel DockPanel.Dock="Top" Margin="2,2,2,8">
+                        <TextBlock Text="Premium text motion" FontSize="16" FontWeight="SemiBold" Foreground="#E8C77A"/>
+                        <TextBlock Text="Browse 240 lightweight text animations. Hover a card to preview; double-click or select one and apply it to a text clip." Margin="0,5,0,8" Foreground="#A8A5B3" FontSize="11.5" TextWrapping="Wrap"/>
+                        <ComboBox x:Name="AnimationCategoryBox" ToolTip="Filter motion cards by animation type"/>
+                      </StackPanel>
+                      <Button DockPanel.Dock="Bottom" Content="✦ Apply animation to selected text" Click="ApplyAnimationCard_Click" Style="{StaticResource VioletActionButton}" Margin="2,6,2,2"/>
+                      <ListBox x:Name="AnimationCardList" Background="Transparent" BorderThickness="0" Padding="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ListBox.ItemsPanel>
+                      </ListBox>
+                    </DockPanel>
+                  </TabItem>
+                </TabControl>
+            </Grid>
+
+            <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" ShowsPreview="True" Background="#262638" DragCompleted="WorkspaceSplitter_DragCompleted" ToolTip="Drag to resize the media library and preview"/>
+
+            <Border x:Name="ProgramPanelHost" Grid.Column="2" Background="#0E0E15" CornerRadius="8" BorderBrush="#262638" BorderThickness="1" Margin="0,0,3,0" AllowDrop="True" DragOver="WorkspacePanel_DragOver" Drop="WorkspacePanel_Drop">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <Grid x:Name="PreviewHost" Grid.Row="0" ClipToBounds="True" SizeChanged="PreviewHost_SizeChanged" AllowDrop="True" DragOver="Preview_DragOver" Drop="Preview_Drop">
+                    <Border HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7" Padding="7,3" Background="#B51B1D27" CornerRadius="4" Panel.ZIndex="20" Tag="Program" AllowDrop="True" DragOver="WorkspacePanel_DragOver" Drop="WorkspacePanel_Drop" PreviewMouseMove="WorkspacePanel_DragStart" ToolTip="Drag this grip to dock or group the Program Monitor">
+                        <TextBlock Text="Program Monitor  ⠿" Foreground="#E8EAF0" FontSize="10"/>
+                    </Border>
+                    <Grid x:Name="PreviewVideoLayer" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+                        <Grid.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform x:Name="PreviewZoomScale" ScaleX="1" ScaleY="1"/>
+                                <TranslateTransform x:Name="PreviewZoomTranslate"/>
+                            </TransformGroup>
+                        </Grid.RenderTransform>
+                        <Grid x:Name="PreviewMainFrame" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="PreviewFrameScaleTransform" ScaleX="1" ScaleY="1"/>
+                                    <TranslateTransform x:Name="PreviewFrameTranslateTransform"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        <MediaElement x:Name="Preview" LoadedBehavior="Manual" UnloadedBehavior="Manual"
+                                      ScrubbingEnabled="True" Stretch="Uniform" MediaOpened="Preview_MediaOpened"/>
+                        <Image x:Name="PreviewImage" Stretch="Uniform" Visibility="Collapsed"/>
+                        <Image x:Name="ColorGradePreviewImage" Stretch="Uniform" Visibility="Collapsed" IsHitTestVisible="False"/>
+                        </Grid>
+                        <Canvas x:Name="OverlayVideoCanvas2" IsHitTestVisible="False"/>
+                        <Canvas x:Name="OverlayImageCanvas2" IsHitTestVisible="False"/>
+                        <Canvas x:Name="OverlayVideoCanvas3" IsHitTestVisible="False"/>
+                        <Canvas x:Name="OverlayImageCanvas3" IsHitTestVisible="False"/>
+                        <Canvas x:Name="OverlayVideoCanvas4" IsHitTestVisible="False"/>
+                        <Canvas x:Name="OverlayImageCanvas4" IsHitTestVisible="False"/>
+                        <Canvas x:Name="GuideCanvas" IsHitTestVisible="False"/>
+                        <Canvas x:Name="PreviewClickCanvas" IsHitTestVisible="False"/>
+                    </Grid>
+                    <Grid x:Name="AudioPreviewHost" Width="1" Height="1" Opacity="0" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Border x:Name="WelcomePanel" Background="#D9111318" Visibility="Visible">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="360">
+                            <Image Source="pack://application:,,,/Assets/logo.png" Width="110" Height="110" Margin="0,0,0,12" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="Start editing your video" FontSize="22" FontWeight="SemiBold" TextAlignment="Center" Foreground="#F4F5F7" TextWrapping="Wrap"/>
+                            <TextBlock Text="Import a video, image, or audio file, then arrange clips on the timeline." Margin="0,10,0,12" FontSize="13" TextAlignment="Center" Foreground="#B8BDC7" TextWrapping="Wrap"/>
+                            <Button Content="＋  Import media" Click="WelcomeImport_Click" HorizontalAlignment="Center" Padding="18,9" Background="#159DB2" Foreground="White" FontWeight="Bold"/>
+                            <TextBlock Text="Tip: Double-click imported media to add it to the timeline." Margin="0,10,0,0" FontSize="11" TextAlignment="Center" Foreground="#9197A2" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                    <Grid Grid.Row="1" Background="#171722">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Slider x:Name="PreviewSeekSlider" Grid.Row="0" Style="{StaticResource SeekSlider}" Minimum="0" Maximum="1" Value="0" Margin="12,8,12,2" ValueChanged="PreviewSeek_Changed"/>
+                        <Grid Grid.Row="1" Margin="10,2,10,8">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="PreviewClock" Text="00:00 / 00:00" FontFamily="Consolas" FontSize="12" Foreground="#B9BCD6" VerticalAlignment="Center"/>
+                                <TextBlock Text="Preview" Margin="12,0,4,0" Foreground="#A8AFBA" VerticalAlignment="Center" FontSize="11"/>
+                                <ComboBox x:Name="PreviewQualityBox" Width="126" SelectedIndex="0" SelectionChanged="PreviewQuality_Changed" ToolTip="Choose original quality or a smaller proxy for smoother playback" VerticalAlignment="Center">
+                                    <ComboBoxItem Content="Original" Tag="0"/>
+                                    <ComboBoxItem Content="Proxy · 720p" Tag="720"/>
+                                    <ComboBoxItem Content="Proxy · 540p" Tag="540"/>
+                                    <ComboBoxItem Content="Proxy · 360p · Lite" Tag="360"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="⏮" Style="{StaticResource IconButton}" Click="SeekStart_Click" ToolTip="Go to start"/>
+                                <Button Content="↺5" Style="{StaticResource IconButton}" Click="SeekBack_Click" ToolTip="Back 5 seconds"/>
+                                <Button Content="◂|" Style="{StaticResource IconButton}" Click="SeekFrameBack_Click" ToolTip="Back one frame · Left Arrow"/>
+                                <Button x:Name="PreviewPlayBtn" Content="▶" Click="PreviewPlay_Click" Style="{StaticResource RoundPlayButton}" ToolTip="Play / Pause · Space"/>
+                                <Button Content="|▸" Style="{StaticResource IconButton}" Click="SeekFrameForward_Click" ToolTip="Forward one frame · Right Arrow"/>
+                                <Button Content="5↻" Style="{StaticResource IconButton}" Click="SeekForward_Click" ToolTip="Forward 5 seconds"/>
+                            </StackPanel>
+                            <Button Grid.Column="2" Content="⛶" Style="{StaticResource IconButton}" Click="FullscreenPreview_Click" ToolTip="Open large preview · Esc to close" HorizontalAlignment="Right" FontSize="16"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <GridSplitter Grid.Column="3" Width="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" ShowsPreview="True" Background="#30333A" DragCompleted="WorkspaceSplitter_DragCompleted" ToolTip="Drag to resize the preview and clip inspector"/>
+
+            <ScrollViewer x:Name="InspectorPanelHost" Grid.Column="4" Margin="3,0,0,0" Background="{StaticResource PanelBrush}" VerticalScrollBarVisibility="Auto" AllowDrop="True" DragOver="WorkspacePanel_DragOver" Drop="WorkspacePanel_Drop">
+                <StackPanel Margin="2,0,8,0">
+                    <TextBlock x:Name="PropertiesTitle" Text="Properties  ⠿" FontWeight="SemiBold" FontSize="14" Margin="10,10,0,8" Foreground="#E8EAF0" Tag="Inspector" PreviewMouseMove="WorkspacePanel_DragStart" ToolTip="Drag this grip to dock or group the Inspector"/>
+                    <TextBlock x:Name="HintText" Text="Select a clip on the timeline to edit its settings." TextWrapping="Wrap" Foreground="#9299A5" Margin="10,0,8,8"/>
+
+                    <StackPanel x:Name="GapPanel" Visibility="Collapsed" Margin="8,0,8,8">
+                        <TextBlock Text="TIMELINE GAP" FontWeight="Bold" Foreground="#AEB5C2" Margin="0,0,0,6"/>
+                        <TextBlock Text="An empty black section in the finished video. Change its length or remove it to close the space." TextWrapping="Wrap" Foreground="#9299A5" Margin="0,0,0,8"/>
+                        <TextBlock Text="Gap length (seconds)"/>
+                        <Slider x:Name="GapDurationSlider" Minimum="0.1" Maximum="60" Value="1" ValueChanged="GapDuration_Changed"/>
+                        <Button Content="Remove gap and close timeline" Click="RippleDelete_Click" Style="{StaticResource VioletActionButton}" HorizontalAlignment="Left" Margin="0,6,0,0"/>
+                    </StackPanel>
+
+                    <!-- Main track clip -->
+                    <StackPanel x:Name="Inspector" Visibility="Collapsed">
+                        <TextBlock x:Name="InspTitle" Text="Clip" FontWeight="Bold" Margin="0,0,0,8" TextTrimming="CharacterEllipsis"/>
+
+                        <TextBlock Text="Trim start (frame-snapped)"/>
+                        <Slider x:Name="TrimInSlider" Minimum="0" Maximum="60" Value="0" ValueChanged="Trim_Slider"/>
+                        <TextBlock Text="Trim end (frame-snapped)"/>
+                        <Slider x:Name="TrimOutSlider" Minimum="0.1" Maximum="60" Value="10" ValueChanged="Trim_Slider"/>
+                        <TextBlock x:Name="TrimFrameInfo" Text="In 00:00:00:00  ·  Out 00:00:00:00  ·  0 frames" FontSize="10" Foreground="#AEB5C4" Margin="0,2,0,8"/>
+                        <TextBlock Text="Adjust the handles to remove unwanted beginning or ending footage." Margin="0,0,0,8" FontSize="11" Foreground="#748093" TextWrapping="Wrap"/>
+
+                        <Expander Header="🖼 Frame &amp; Background" IsExpanded="True" Margin="0,0,0,8" Foreground="#7EDCF1">
+                            <StackPanel Margin="8,4,4,4">
+                                <Button Content="Choose image / color…" Click="OpenVideoLab_Click" HorizontalAlignment="Left" Margin="0,2,0,7" ToolTip="Open the background library and color presets"/>
+                                <TextBlock Text="Video size on background"/>
+                                <Slider x:Name="MainFrameScaleSlider" Minimum="0.2" Maximum="2" Value="1" ValueChanged="Param_Slider" ToolTip="Resize the selected video inside the background"/>
+                                <TextBlock Text="Horizontal position"/>
+                                <Slider x:Name="MainFrameXSlider" Minimum="0" Maximum="1" Value="0.5" ValueChanged="Param_Slider" ToolTip="Move the video left or right over the background"/>
+                                <TextBlock Text="Vertical position"/>
+                                <Slider x:Name="MainFrameYSlider" Minimum="0" Maximum="1" Value="0.5" ValueChanged="Param_Slider" ToolTip="Move the video up or down over the background"/>
+                                <Button Content="Reset video frame" Click="ResetMainFrame_Click" HorizontalAlignment="Left" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <TextBlock Text="Speed (0.25x - 4x)"/>
+                        <Slider x:Name="SpeedSlider" Minimum="0.25" Maximum="4" Value="1" ValueChanged="Param_Slider"/>
+                        <TextBlock Text="Brightness"/>
+                        <Slider x:Name="BrightnessSlider" Minimum="-0.5" Maximum="0.5" Value="0" ValueChanged="Param_Slider"/>
+                        <TextBlock Text="Contrast"/>
+                        <Slider x:Name="ContrastSlider" Minimum="0.5" Maximum="1.5" Value="1" ValueChanged="Param_Slider"/>
+                        <TextBlock Text="Saturation"/>
+                        <Slider x:Name="SaturationSlider" Minimum="0" Maximum="2" Value="1" ValueChanged="Param_Slider"/>
+                        <TextBlock Text="Color temperature (cool · warm)"/>
+                        <Slider x:Name="TemperatureSlider" Minimum="-1" Maximum="1" Value="0" ValueChanged="Param_Slider"/>
+                        <TextBlock Text="Tint (green · magenta)"/>
+                        <Slider x:Name="TintSlider" Minimum="-1" Maximum="1" Value="0" ValueChanged="Param_Slider"/>
+
+                        <Expander Header="🎨 Advanced Color Lab" IsExpanded="False" Margin="0,3,0,8" Foreground="#CBB8FF">
+                            <StackPanel Margin="8,4,4,0">
+                                <TextBlock Text="Exposure (stops)"/><Slider x:Name="ExposureSlider" Minimum="-2" Maximum="2" Value="0" TickFrequency="0.1" ValueChanged="Param_Slider"/>
+                                <TextBlock Text="Highlights"/><Slider x:Name="HighlightsSlider" Minimum="-1" Maximum="1" Value="0" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                                <TextBlock Text="Shadows"/><Slider x:Name="ShadowsSlider" Minimum="-1" Maximum="1" Value="0" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                                <TextBlock Text="Hue (degrees)"/><Slider x:Name="HueSlider" Minimum="-180" Maximum="180" Value="0" TickFrequency="5" ValueChanged="Param_Slider"/>
+                                <TextBlock Text="Vibrance"/><Slider x:Name="VibranceSlider" Minimum="-1" Maximum="1" Value="0" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                                <TextBlock Text="Sharpen"/><Slider x:Name="SharpnessSlider" Minimum="0" Maximum="2" Value="0" TickFrequency="0.1" ValueChanged="Param_Slider"/>
+                                <TextBlock Text="Vignette"/><Slider x:Name="VignetteSlider" Minimum="0" Maximum="1" Value="0" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <TextBlock Text="Filter"/>
+                        <ComboBox x:Name="FilterBox" SelectedIndex="0" SelectionChanged="Param_Combo" ToolTip="Choose from 50 lightweight color looks plus basic filters"/>
+
+                        <TextBlock Text="Transition (from previous clip)"/>
+                        <ComboBox x:Name="TransitionBox" SelectedIndex="0" SelectionChanged="Param_Combo">
+                            <ComboBoxItem Content="None"/>
+                            <ComboBoxItem Content="Fade"/>
+                            <ComboBoxItem Content="Dissolve"/>
+                            <ComboBoxItem Content="Wipe left"/>
+                            <ComboBoxItem Content="Slide left"/>
+                            <ComboBoxItem Content="Circle open"/>
+                            <ComboBoxItem Content="Circle close"/>
+                            <ComboBoxItem Content="Wipe right"/>
+                            <ComboBoxItem Content="Wipe up"/>
+                            <ComboBoxItem Content="Wipe down"/>
+                            <ComboBoxItem Content="Slide right"/>
+                            <ComboBoxItem Content="Smooth left"/>
+                            <ComboBoxItem Content="Fade to black"/>
+                            <ComboBoxItem Content="Fade to white"/>
+                            <ComboBoxItem Content="Zoom in"/>
+                            <ComboBoxItem Content="Pixelize"/>
+                            <ComboBoxItem Content="Radial"/>
+                            <ComboBoxItem Content="Slide up"/>
+                            <ComboBoxItem Content="Slide down"/>
+                            <ComboBoxItem Content="Smooth right"/>
+                            <ComboBoxItem Content="Smooth up"/>
+                            <ComboBoxItem Content="Smooth down"/>
+                            <ComboBoxItem Content="Diagonal top-left"/>
+                            <ComboBoxItem Content="Diagonal top-right"/>
+                            <ComboBoxItem Content="Diagonal bottom-left"/>
+                            <ComboBoxItem Content="Diagonal bottom-right"/>
+                            <ComboBoxItem Content="Vertical open"/>
+                            <ComboBoxItem Content="Vertical close"/>
+                            <ComboBoxItem Content="Horizontal open"/>
+                            <ComboBoxItem Content="Horizontal close"/>
+                            <ComboBoxItem Content="Circle crop"/>
+                            <ComboBoxItem Content="Rectangle crop"/>
+                            <ComboBoxItem Content="Distance"/>
+                            <ComboBoxItem Content="Horizontal slice left"/>
+                            <ComboBoxItem Content="Horizontal slice right"/>
+                            <ComboBoxItem Content="Vertical slice up"/>
+                            <ComboBoxItem Content="Vertical slice down"/>
+                            <ComboBoxItem Content="Blur"/>
+                            <ComboBoxItem Content="Fade gray"/>
+                            <ComboBoxItem Content="Squeeze vertical"/>
+                            <ComboBoxItem Content="Squeeze horizontal"/>
+                            <ComboBoxItem Content="Horizontal wind left"/>
+                            <ComboBoxItem Content="Horizontal wind right"/>
+                            <ComboBoxItem Content="Vertical wind up"/>
+                            <ComboBoxItem Content="Vertical wind down"/>
+                            <ComboBoxItem Content="Fast fade"/>
+                            <ComboBoxItem Content="Slow fade"/>
+                            <ComboBoxItem Content="Wipe diagonal top-left"/>
+                            <ComboBoxItem Content="Wipe diagonal top-right"/>
+                            <ComboBoxItem Content="Wipe diagonal bottom-left"/>
+                            <ComboBoxItem Content="Wipe diagonal bottom-right"/>
+                            <ComboBoxItem Content="Cover left"/>
+                            <ComboBoxItem Content="Cover right"/>
+                            <ComboBoxItem Content="Cover up"/>
+                            <ComboBoxItem Content="Cover down"/>
+                            <ComboBoxItem Content="Reveal left"/>
+                            <ComboBoxItem Content="Reveal right"/>
+                            <ComboBoxItem Content="Reveal up"/>
+                            <ComboBoxItem Content="Reveal down"/>
+                        </ComboBox>
+
+                        <CheckBox x:Name="StabilizeCheck" Content="Stabilize video" Checked="Param_Check" Unchecked="Param_Check"/>
+                        <CheckBox x:Name="MouseZoomCheck" Content="Mouse-follow zoom (Preview + Export)" ToolTip="See mouse zoom in the preview and adjust its strength below." Checked="Param_Check" Unchecked="Param_Check" Visibility="Collapsed"/>
+                        <StackPanel x:Name="MouseZoomControls" Visibility="Collapsed" Margin="8,0,4,6">
+                            <Border Background="#22262D" BorderBrush="#3B424C" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,3,0,8">
+                                <StackPanel>
+                                    <TextBlock Text="ADVANCED ZOOM" FontSize="10" FontWeight="Bold" Foreground="#62D5E1" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Zoom style (30 presets)"/>
+                                    <ComboBox x:Name="ZoomPresetBox" SelectionChanged="ZoomPreset_Changed" ToolTip="Apply a ready-made zoom strength, speed, duration and curve"/>
+                                    <TextBlock Text="Zoom curve"/>
+                                    <ComboBox x:Name="ZoomEasingBox" SelectedIndex="0" SelectionChanged="Param_Combo" ToolTip="Controls how quickly the zoom accelerates and settles">
+                                        <ComboBoxItem Content="Smooth"/><ComboBoxItem Content="Cinematic"/><ComboBoxItem Content="Snappy"/><ComboBoxItem Content="Linear"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="Zoom amount (1×–2×)"/>
+                            <Slider x:Name="MouseZoomStrengthSlider" Minimum="1" Maximum="2" Value="1.35" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                            <TextBlock Text="Zoom-in speed (seconds)"/>
+                            <Slider x:Name="MouseZoomSpeedSlider" Minimum="0.05" Maximum="1" Value="0.22" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                            <TextBlock Text="Zoom duration (seconds)"/>
+                            <Slider x:Name="MouseZoomDurationSlider" Minimum="0.2" Maximum="4" Value="1.07" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                            <TextBlock Text="Default is 1.07 seconds. Drag a ZOOM marker to retime it, or drag its right edge to change duration."
+                                       FontSize="10" Foreground="#9299A5" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                        </StackPanel>
+                        <StackPanel x:Name="ClickEffectsPanel" Visibility="Collapsed" Margin="8,0,4,6">
+                            <Border Background="#22262D" BorderBrush="#3B424C" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,3,0,8">
+                                <StackPanel>
+                                    <TextBlock Text="MOUSE CLICK HIGHLIGHT" FontSize="10" FontWeight="Bold" Foreground="#C6A7FF" Margin="0,0,0,5"/>
+                                    <CheckBox x:Name="ClickEffectsCheck" Content="Show click rings in preview/export" Checked="Param_Check" Unchecked="Param_Check"/>
+                                    <TextBlock Text="Ring color"/><ComboBox x:Name="ClickEffectColorBox" SelectedIndex="0" SelectionChanged="Param_Combo">
+                                        <ComboBoxItem Content="Sky blue" Tag="#61D9FF"/><ComboBoxItem Content="Purple" Tag="#B78AFF"/>
+                                        <ComboBoxItem Content="Warm gold" Tag="#FFD166"/><ComboBoxItem Content="Mint" Tag="#54E6B4"/>
+                                    </ComboBox>
+                                    <TextBlock Text="Click animation"/><ComboBox x:Name="ClickEffectStyleBox" SelectedIndex="0" SelectionChanged="Param_Combo" ToolTip="Soft pulse is a subtle, smooth mouse-click highlight; preview and export both use this style.">
+                                        <ComboBoxItem Content="Soft click pulse" Tag="Soft click pulse"/>
+                                        <ComboBoxItem Content="Halo ring" Tag="Halo ring"/>
+                                        <ComboBoxItem Content="Bold ripple" Tag="Bold ripple"/>
+                                    </ComboBox>
+                                    <TextBlock Text="Ring size"/><Slider x:Name="ClickEffectSizeSlider" Minimum="0.04" Maximum="0.18" Value="0.085" TickFrequency="0.01" ValueChanged="Param_Slider"/>
+                                    <TextBlock Text="Ring duration (seconds)"/><Slider x:Name="ClickEffectDurationSlider" Minimum="0.2" Maximum="1.5" Value="0.48" TickFrequency="0.05" ValueChanged="Param_Slider"/>
+                                    <TextBlock Text="Left, right, middle and side-button clicks are tracked." FontSize="10" Foreground="#9299A5" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <TextBlock Text="Volume"/>
+                        <Slider x:Name="VolumeSlider" Minimum="0" Maximum="2" Value="1" ValueChanged="Param_Slider"/>
+                        <CheckBox x:Name="DenoiseCheck" Content="Reduce audio noise" Checked="Param_Check" Unchecked="Param_Check"/>
+
+                        <TextBlock Text="Voice changer"/>
+                        <ComboBox x:Name="VoiceBox" SelectedIndex="0" SelectionChanged="Param_Combo">
+                            <ComboBoxItem Content="None"/>
+                            <ComboBoxItem Content="Deep"/>
+                            <ComboBoxItem Content="Chipmunk"/>
+                            <ComboBoxItem Content="Echo"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Text overlay (bottom)"/>
+                        <TextBox x:Name="OverlayBox" LostFocus="Param_Text"/>
+                    </StackPanel>
+
+                    <!-- Overlay (PiP video/image) or text clip -->
+                    <StackPanel x:Name="LayerPanel" Visibility="Collapsed">
+                        <TextBlock x:Name="LayerTitle" Text="Overlay" FontWeight="Bold" Margin="0,0,0,8" TextTrimming="CharacterEllipsis"/>
+
+                        <TextBlock Text="Duration (seconds)"/>
+                        <Slider x:Name="LDurSlider" Minimum="0.5" Maximum="60" Value="3" ValueChanged="Layer_Slider"/>
+                        <TextBlock Text="Motion / text animation (240+)" Margin="0,6,0,2"/>
+                        <ComboBox x:Name="AnimationBox" SelectionChanged="Animation_Changed" ToolTip="Choose an animation preset; numbered variations change its speed"/>
+                        <TextBlock Text="Lightweight CPU animations for text, images and video overlays." FontSize="10" Foreground="#9299A5" Margin="0,2,0,6" TextWrapping="Wrap"/>
+                        <TextBlock Text="Position X (0 left - 1 right)"/>
+                        <Slider x:Name="LXSlider" Minimum="0" Maximum="1" Value="0.5" ValueChanged="Layer_TransformSlider"/>
+                        <TextBlock Text="Position Y (0 top - 1 bottom)"/>
+                        <Slider x:Name="LYSlider" Minimum="0" Maximum="1" Value="0.5" ValueChanged="Layer_TransformSlider"/>
+
+                        <StackPanel x:Name="LMediaOnly">
+                            <TextBlock Text="Size"/>
+                            <Slider x:Name="LScaleSlider" Minimum="0.05" Maximum="1" Value="0.3" ValueChanged="Layer_Slider"/>
+                            <TextBlock Text="Opacity"/>
+                            <Slider x:Name="LOpacitySlider" Minimum="0" Maximum="1" Value="1" ValueChanged="Layer_Slider"/>
+                            <TextBlock x:Name="LKeyInfo" Text="Keyframes: 0" Foreground="#AAA" TextWrapping="Wrap"/>
+                            <WrapPanel>
+                                <Button Content="+ Keyframe at playhead" Click="AddKey_Click"/>
+                                <Button Content="Clear keyframes" Click="ClearKeys_Click"/>
+                            </WrapPanel>
+                        </StackPanel>
+
+                        <StackPanel x:Name="LTextOnly">
+                            <TextBlock Text="Text design templates (50)" Margin="0,6,0,2"/>
+                            <ComboBox x:Name="TextTemplateBox" SelectionChanged="TextTemplate_Changed" ToolTip="Apply a ready-made title style and animation"/>
+                            <TextBlock Text="Start time (seconds)" Margin="0,7,0,2"/>
+                            <TextBox x:Name="LStartBox" LostFocus="TextStart_LostFocus" ToolTip="Set the caption start time precisely"/>
+                            <TextBlock Text="Text"/>
+                            <TextBox x:Name="LTextBox" AcceptsReturn="True" Height="60" TextWrapping="Wrap" TextChanged="Layer_TextChanged" LostFocus="Layer_Text"/>
+                            <TextBlock Text="Font size"/>
+                            <Slider x:Name="LFontSlider" Minimum="20" Maximum="200" Value="60" ValueChanged="TextKeySlider"/>
+                            <TextBlock Text="Font family" Margin="0,5,0,2"/>
+                            <ComboBox x:Name="LFontFamilyBox" SelectedIndex="0" SelectionChanged="Layer_Combo">
+                                <ComboBoxItem Content="Arial"/><ComboBoxItem Content="Segoe UI"/><ComboBoxItem Content="Calibri"/>
+                                <ComboBoxItem Content="Georgia"/><ComboBoxItem Content="Impact"/><ComboBoxItem Content="Consolas"/>
+                                <ComboBoxItem Content="Times New Roman"/><ComboBoxItem Content="Verdana"/><ComboBoxItem Content="Nirmala UI"/>
+                            </ComboBox>
+                            <WrapPanel Margin="0,4,0,2">
+                                <CheckBox x:Name="LTextBoldCheck" Content="Bold" IsChecked="True" Click="TextAdvancedCheck_Click" Margin="0,0,14,0"/>
+                                <CheckBox x:Name="LTextItalicCheck" Content="Italic" Click="TextAdvancedCheck_Click"/>
+                            </WrapPanel>
+                            <TextBlock Text="Paragraph alignment" Margin="0,4,0,2"/>
+                            <ComboBox x:Name="LTextAlignmentBox" SelectedIndex="1" SelectionChanged="Layer_Combo">
+                                <ComboBoxItem Content="Left"/><ComboBoxItem Content="Center"/><ComboBoxItem Content="Right"/>
+                            </ComboBox>
+                            <TextBlock Text="Line spacing" Margin="0,5,0,0"/>
+                            <Slider x:Name="LLineSpacingSlider" Minimum="-8" Maximum="32" Value="0" TickFrequency="2" ValueChanged="Layer_Slider"/>
+                            <TextBlock Text="Color"/>
+                            <ComboBox x:Name="LColorBox" SelectedIndex="0" SelectionChanged="Layer_Combo">
+                                <ComboBoxItem Content="White"/>
+                                <ComboBoxItem Content="Yellow"/>
+                                <ComboBoxItem Content="Red"/>
+                                <ComboBoxItem Content="Cyan"/>
+                                <ComboBoxItem Content="Black"/>
+                                <ComboBoxItem Content="Gold"/>
+                                <ComboBoxItem Content="Pink"/>
+                                <ComboBoxItem Content="Violet"/>
+                            </ComboBox>
+                            <TextBlock Text="Text background shape" Margin="0,6,0,2"/>
+                            <ComboBox x:Name="LShapeBox" SelectedIndex="0" SelectionChanged="Layer_Combo">
+                                <ComboBoxItem Content="None"/>
+                                <ComboBoxItem Content="Caption box"/>
+                                <ComboBoxItem Content="Highlight box"/>
+                            </ComboBox>
+                            <Expander Header="Advanced text settings" IsExpanded="False" Margin="0,8,0,4" Foreground="#E8C77A">
+                                <StackPanel Margin="8,6,4,4">
+                                    <CheckBox x:Name="TextShadowCheck" Content="Soft drop shadow" Click="TextAdvancedCheck_Click" ToolTip="Adds a subtle shadow in the preview and export"/>
+                                    <TextBlock Text="Shadow color" Margin="0,6,0,2"/>
+                                    <ComboBox x:Name="TextShadowColorBox" SelectedIndex="7" SelectionChanged="Layer_Combo">
+                                        <ComboBoxItem Content="White"/><ComboBoxItem Content="Yellow"/><ComboBoxItem Content="Red"/><ComboBoxItem Content="Cyan"/>
+                                        <ComboBoxItem Content="Gold"/><ComboBoxItem Content="Pink"/><ComboBoxItem Content="Violet"/><ComboBoxItem Content="Black"/>
+                                    </ComboBox>
+                                    <TextBlock Text="Shadow softness" Margin="0,5,0,0"/>
+                                    <Slider x:Name="TextShadowSoftnessSlider" Minimum="0" Maximum="20" Value="7" TickFrequency="1" ValueChanged="Layer_Slider"/>
+                                    <TextBlock Text="Outline width" Margin="0,7,0,0"/>
+                                    <Slider x:Name="TextOutlineSlider" Minimum="0" Maximum="8" Value="3" TickFrequency="1" ValueChanged="Layer_Slider" ToolTip="Set the outline thickness around text"/>
+                                    <TextBlock Text="Outline color" Margin="0,6,0,2"/>
+                                    <ComboBox x:Name="TextOutlineColorBox" SelectedIndex="7" SelectionChanged="Layer_Combo">
+                                        <ComboBoxItem Content="White"/><ComboBoxItem Content="Yellow"/><ComboBoxItem Content="Red"/><ComboBoxItem Content="Cyan"/>
+                                        <ComboBoxItem Content="Gold"/><ComboBoxItem Content="Pink"/><ComboBoxItem Content="Violet"/><ComboBoxItem Content="Black"/>
+                                    </ComboBox>
+                                    <TextBlock Text="Text opacity" Margin="0,4,0,0"/>
+                                    <Slider x:Name="TextOpacitySlider" Minimum="0.1" Maximum="1" Value="1" TickFrequency="0.05" ValueChanged="TextKeySlider" ToolTip="Make the title more or less transparent"/>
+                                    <TextBlock x:Name="LTextKeyInfo" Text="Text keyframes: 0" Foreground="#AAA" TextWrapping="Wrap" Margin="0,7,0,2"/>
+                                    <WrapPanel>
+                                        <Button Content="＋ Keyframe at playhead" Click="AddTextKey_Click" Style="{StaticResource BlueActionButton}"/>
+                                        <Button Content="Clear text keyframes" Click="ClearTextKeys_Click"/>
+                                    </WrapPanel>
+                                    <TextBlock Text="These settings update the preview and exported video." Foreground="#9299A5" FontSize="10" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Audio clip -->
+                    <StackPanel x:Name="AudioPanel" Visibility="Collapsed">
+                        <TextBlock x:Name="ATitle" Text="Audio" FontWeight="Bold" Margin="0,0,0,8" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="Volume"/>
+                        <Slider x:Name="AVolumeSlider" Minimum="0" Maximum="2" Value="1" ValueChanged="Audio_VolumeSlider"/>
+                <TextBlock Text="Fade in (seconds)"/>
+                <Slider x:Name="AFadeInSlider" Minimum="0" Maximum="5" Value="0" ValueChanged="Audio_Slider"/>
+                <TextBlock Text="Fade out (seconds)"/>
+                <Slider x:Name="AFadeOutSlider" Minimum="0" Maximum="5" Value="0" ValueChanged="Audio_Slider"/>
+                        <TextBlock x:Name="AudioKeyInfo" Text="Volume keyframes: 0" Foreground="#A8A5B3" Margin="0,7,0,2"/>
+                        <WrapPanel>
+                            <Button Content="＋ Volume keyframe" Click="AddAudioKey_Click" Style="{StaticResource BlueActionButton}"/>
+                            <Button Content="Clear volume keys" Click="ClearAudioKeys_Click"/>
+                        </WrapPanel>
+                        <TextBlock Text="Length (seconds)"/>
+                        <Slider x:Name="ADurSlider" Minimum="0.5" Maximum="60" Value="5" ValueChanged="Audio_Slider"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Timeline -->
+        <GridSplitter Grid.Row="3" Height="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" ShowsPreview="True" Background="#30333A" DragCompleted="WorkspaceSplitter_DragCompleted" ToolTip="Drag to resize the preview workspace and timeline"/>
+
+        <Grid Grid.Row="4" Margin="8,0,8,8" Background="#1C1C28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Row="0" Margin="0,0,0,4">
+                <TextBlock x:Name="TimeText" Text="00:00:00:00 / 00:00:00:00" FontFamily="Consolas" FontSize="12" VerticalAlignment="Center" Margin="8,5" Foreground="#9FA6FF" ToolTip="Frame-accurate timecode at the selected export frame rate"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="2,0,4,0">
+                    <Button Content="↶" Click="Undo_Click" ToolTip="Undo · Ctrl+Z" Padding="8,3"/>
+                    <Button Content="↷" Click="Redo_Click" ToolTip="Redo · Ctrl+Y" Padding="8,3"/>
+                    <Button Content="✂ Split" Click="Split_Click" ToolTip="Split the selected audio or text clip, or the V1 clip, at the playhead" Style="{StaticResource VioletActionButton}" Padding="9,3"/>
+                    <Button Content="＋ Gap" Click="InsertGap_Click" ToolTip="Insert a one-second black gap at the playhead; select it to adjust its duration" Padding="9,3"/>
+                    <Button Content="＋ Text lane" Click="AddTextLane_Click" ToolTip="Add another text row to the timeline" Padding="8,3"/>
+                    <Button Content="＋ Audio lane" Click="AddAudioLane_Click" ToolTip="Add another audio row to the timeline" Padding="8,3"/>
+                    <Button Content="Clean lanes" Click="CleanEmptyLanes_Click" ToolTip="Remove unused text and audio rows and compact occupied lanes" Padding="8,3"/>
+                    <Button Content="Duplicate" Click="Duplicate_Click" ToolTip="Duplicate selected clips · Ctrl+D" Padding="9,3"/>
+                    <Button Content="To playhead" Click="MoveSelectedToPlayhead_Click" ToolTip="Move the selected clip or group to the playhead" Padding="9,3"/>
+                    <Button Content="Ripple delete" Click="RippleDelete_Click" ToolTip="Delete the selected V1 clip and close the gap" Style="{StaticResource VioletActionButton}" Padding="9,3"/>
+                    <Button Content="＋ Text" Click="AddText_Click" ToolTip="Add a title at the playhead" Style="{StaticResource BlueActionButton}" Padding="9,3"/>
+                    <Button Content="Delete" Click="Delete_Click" ToolTip="Delete the selected clip" Padding="9,3"/>
+                </StackPanel>
+                <CheckBox x:Name="SnapCheck" Content="Snap" IsChecked="True" VerticalAlignment="Center" Margin="8,0" ToolTip="Magnetically align clip edges to the playhead and neighboring clips"/>
+                <TextBlock Text="Drag empty space to select" FontSize="10" Foreground="#9299A5" VerticalAlignment="Center" Margin="4,0,8,0"/>
+                <Slider x:Name="ZoomSlider" Minimum="20" Maximum="200" Value="60" Width="140" Margin="0"
+                        DockPanel.Dock="Right" ToolTip="Zoom" ValueChanged="Zoom_Changed"/>
+                <TextBlock Text="Zoom" DockPanel.Dock="Right" Margin="0,0,6,0" Foreground="#9AA1AD" VerticalAlignment="Center"/>
+            </DockPanel>
+            <ScrollViewer x:Name="TimelineScroll" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="False" PanningMode="HorizontalOnly">
+                <Canvas x:Name="TimelineCanvas" Height="416" AllowDrop="True" Background="#151520" HorizontalAlignment="Left"
+                        MouseLeftButtonDown="Timeline_MouseDown" MouseMove="Timeline_MouseMove" MouseLeftButtonUp="Timeline_MouseUp"
+                        DragOver="Timeline_DragOver" Drop="Timeline_Drop"
+                        LostMouseCapture="Timeline_LostMouseCapture" PreviewMouseRightButtonDown="Timeline_RightClick"
+                        ToolTip="Drag on empty timeline space to select clips across video, overlay, text, sticker and audio tracks. Ctrl-click or Ctrl+A selects multiple clips; drag a selected V1 clip to move the group with its selected overlays/audio. Drag clip edges to trim; V1 start trim can leave a gap. Use + Gap to insert black time and Ripple delete to close it. V1 is the main cut; V2–V4 are overlays; T1–T3 are separate text lanes; A1–A3 are audio lanes.">
+                    <Canvas.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Split at playhead" Click="Split_Click"/>
+                            <MenuItem Header="Duplicate selected clip" Click="Duplicate_Click"/>
+                            <MenuItem Header="Move selected to playhead" Click="MoveSelectedToPlayhead_Click"/>
+                            <MenuItem Header="Ripple delete V1 clip" Click="RippleDelete_Click"/>
+                            <MenuItem Header="Delete selected item" Click="Delete_Click"/>
+                            <Separator/>
+                            <MenuItem Header="Zoom timeline to fit" Click="ZoomFit_Click"/>
+                        </ContextMenu>
+                    </Canvas.ContextMenu>
+                </Canvas>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

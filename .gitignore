@@ -1,0 +1,36 @@
+# .NET build output
+**/bin/
+**/obj/
+**/.vs/
+*.user
+*.suo
+*.cache
+
+# Publish and installer output
+publish/
+dist/
+artifacts/
+AppPackages/
+BundleArtifacts/
+MyEditor-a/AppPackages/
+MyEditor-a/BundleArtifacts/
+MyEditor-a/bin/
+MyEditor-a/obj/
+# Legacy Store packaging project contains account-specific signing identity and is not used by the current root app.
+MyEditor-a/
+
+# Local package archives and generated release bundles
+MyEditor.zip
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+*.appxupload
+*.msixupload
+
+# Local tools, logs, and editor state
+tools/
+logs/
+*.log
+.DS_Store
+Thumbs.db

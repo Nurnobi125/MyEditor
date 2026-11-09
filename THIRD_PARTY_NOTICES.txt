@@ -1,0 +1,18 @@
+MyEditor Video Studio 3.3.0 — Third-party notices
+
+System.Speech 10.0.13
+Microsoft System.Speech package; MIT License. The package provides Windows speech synthesis/recognition APIs. Package and license information: https://www.nuget.org/packages/System.Speech/10.0.13
+
+.NET 10
+The self-contained app includes Microsoft .NET runtime components. Notices and license information: https://dotnet.microsoft.com/en-us/dotnet
+
+FFmpeg (downloaded by the app at first run)
+MyEditor does not include FFmpeg in its published ZIP. The app offers to download the FFmpeg Essentials Windows build from Gyan Doshi's gyan.dev distribution, with a GitHub mirror fallback, and extracts ffmpeg.exe and ffprobe.exe into the user's local application data folder. The current upstream Essentials build is GPLv3 and includes GPL-licensed codecs such as libx264. FFmpeg source, configuration, build and license information: https://www.gyan.dev/ffmpeg/builds/ and https://ffmpeg.org/legal.html. Users who redistribute the downloaded FFmpeg binaries must comply with the applicable GPLv3 and third-party component terms. MyEditor does not claim ownership of FFmpeg or its codecs.
+
+whisper.cpp (downloaded on demand for local captions)
+The app downloads a Windows x64 whisper.cpp command-line runtime from the upstream ggml-org/whisper.cpp GitHub releases. whisper.cpp is MIT-licensed: https://github.com/ggml-org/whisper.cpp. The runtime is not bundled in this ZIP.
+
+Whisper base-q5_1 model (downloaded on demand for local captions)
+The app downloads ggml-base-q5_1.bin from https://huggingface.co/ggerganov/whisper.cpp. The model repository declares the MIT License; model card and license details are available at that repository. The model is not bundled in this ZIP.
+
+This notice is informational and does not replace the complete license texts or legal review required for a particular distribution.
