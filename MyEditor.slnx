@@ -1,14 +1,7 @@
 <Solution>
   <Configurations>
-    <Platform Name="Any CPU" />
-    <Platform Name="ARM" />
-    <Platform Name="ARM64" />
     <Platform Name="x64" />
-    <Platform Name="x86" />
   </Configurations>
-  <Project Path="MyEditor-a/MyEditor-a.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="fb2c2e27-12a1-4448-a579-bc31005b8f77">
-    <Deploy />
-  </Project>
   <Project Path="MyEditor.csproj">
     <Platform Project="x64" />
   </Project>
